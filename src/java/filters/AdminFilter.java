@@ -18,40 +18,35 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author awarsyle
+ * @author 810585
  */
-public class AuthenticationFilter implements Filter {
+public class AdminFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-
-        // this code will execute before HomeServlet and UsersServlet
         HttpServletRequest r = (HttpServletRequest) request;
         HttpSession session = r.getSession();
-
-        if (session.getAttribute("username") != null) {
-            // if they are authenticated, i.e. have a username in the session,
-            // then allow them to continue on to the servlet
+        String username = (String) session.getAttribute("username");
+        try {
+            username = username.substring(0, 5);
+        } catch (Exception a) {
+            a.printStackTrace();
+        }
+        if (username.equals("admin")) {
             chain.doFilter(request, response);
         } else {
-            // they do not have a username in the sesion
-            // so, send them to login page
             HttpServletResponse resp = (HttpServletResponse) response;
-            resp.sendRedirect("login");
+            resp.sendRedirect("home");
         }
-
-        // this code will execute after HomeServlet and UsersServlet
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
     }
 
     @Override
     public void destroy() {
+    }
 
+    @Override
+    public void init(FilterConfig filterConfig) {
     }
 
 }
